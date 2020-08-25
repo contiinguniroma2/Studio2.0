@@ -40,7 +40,7 @@ public class PrenotazioneDao extends GenericDao {
 			status = ps.executeUpdate();
 		} catch (NotAvalibleSeatsException exc) {
 			myLogger.info(exc.toString());
-		} catch{
+		} catch(MySQLIntegrityConstraintViolationException e){
 			//Nothing to do
 		}
 		finally {
