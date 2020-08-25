@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import logic.entity.Prenotazione;
 import logic.exceptions.NotAvalibleSeatsException;
@@ -38,9 +39,11 @@ public class PrenotazioneDao extends GenericDao {
 			ps.setString(3, LocalDateTime.now().toString());
 			status = ps.executeUpdate();
 		} catch (NotAvalibleSeatsException exc) {
-
 			myLogger.info(exc.toString());
-		} finally {
+		} catch{
+			//Nothing to do
+		}
+		finally {
 			
 			ps.close();
 		}
