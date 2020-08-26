@@ -67,29 +67,23 @@ public class SuperviseController implements StudentSuperviseController, Libraria
 				studentBean.setPhone(listStudents.get(i).getPhone());
 				studentBean.fillUserBean(listStudents.get(i).getUsername(),listStudents.get(i).getMail(), "****", listStudents.get(i).getName(),listStudents.get(i).getPhone());
 				studentBean.fillStudBean(listStudents.get(i).getSurname(), listStudents.get(i).isBanned(), listStudents.get(i).getReportCounter());
+				student = listStudents.get(i);
 				listStudentBean.add(studentBean);
 			}
 		}
 		return studentBean;
 			
 	}
+
+	@Override
+	public void getStudent(String studentId) {
+		student = studentDao.select(studentId, null);
+	}
 	
 
 	@Override
-	public void increaseReportingCounter(String studentId, String librarianId, String reason) {
+	public void increaseReportingCounter(String librarianId, String reason) {
 		Message message = null;
-		int i;
-		if (listStudents == null) {
-			student = studentDao.select(studentId, null);
-		}
-		else {
-			for (i=0; i< listStudents.size(); i++) {
-				if (listStudents.get(i).getMail().equals(studentId)) {
-					student = listStudents.get(i);
-					break;
-				}
-			}
-		}
 		
 		if (student.getStateMachine().getState().getState().equals("Notified")) {
 			message = student.notifyStudent(reason);
@@ -108,9 +102,9 @@ public class SuperviseController implements StudentSuperviseController, Libraria
 			}
 		}
 		message.setLibrarianId(librarianId);
-		message.setStudentId(studentId);
+		message.setStudentId(student.getMail());
 	
-	    updateBean(studentId);
+	    updateBean(student.getMail());
 		studentDao.updateStudent(student);
 		message.setId(messageDao.insert(message));
 	}
